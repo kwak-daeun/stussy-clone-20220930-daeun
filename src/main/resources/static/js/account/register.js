@@ -13,22 +13,25 @@ registerButton.onclick = () => {
     //JSON.parse() -> JSON문자열을 js객체로 변환
 
     let ajaxOption = { //객체
-        async: false,                                           //필수
+        async: false,  //key, value                              //필수
         type: "post",                                           //필수
         url: "/api/account/register",                            //필수
         contentType: "application/json",                        //전송할 데이터가 json인 경우                
         data: JSON.stringify(user),                             //전송할 데이터가 있으면
         dataType: "json", //return타입
-        success: (response) =>{ //괄호 안에는 메소드/          //json와 text 등을 사용할 수 있지만 js사용함
-            alert("회원가입 요청 성공");                        //성공시에 실행될 메소드
+        success: (response) =>{ //괄호 안에는 메소드              //json와 text 등을 사용할 수 있지만 js사용함
+            alert("회원가입 요청 성공");
+            console.log(response);                             //성공시에 실행될 메소드
         },
         error: (error) => {                                     //실패시 실행될 메소드
             alert("회원가입 요청 실패");
+
+            console.log(error.responseJSON);
         }
 
     }
 
-    $.ajax(ajaxOption); //ajax호출
+    $.ajax(ajaxOption); //달러.ajax호출
 
 }
 
