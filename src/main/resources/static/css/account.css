@@ -62,7 +62,7 @@ section{
 }
 
 .errors-invisible {
-    display: flex;
+    display: none;
 
 }
 

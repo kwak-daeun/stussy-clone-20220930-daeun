@@ -21,12 +21,13 @@ registerButton.onclick = () => {
         dataType: "json", //return타입
         success: (response) =>{ //괄호 안에는 메소드              //json와 text 등을 사용할 수 있지만 js사용함
             alert("회원가입 요청 성공");
-            console.log(response);                             //성공시에 실행될 메소드
+           // console.log(response);                             //성공시에 실행될 메소드
         },
         error: (error) => {                                     //실패시 실행될 메소드
             alert("회원가입 요청 실패");
 
-            console.log(error.responseJSON);
+            console.log(error.responseJSON.data);
+            loadErrorMessage(error.responseJSON.data);
         }
 
     }
@@ -35,3 +36,18 @@ registerButton.onclick = () => {
 
 }
 
+function loadErrorMessage(errors){
+    const errorList = document.querySelector(".errors");
+    const errorMsgs = document.querySelector(".error-msgs");
+    const errorArray = Object.values(errors);
+
+    errorMsgs.innerHTML=""; //초기화 실행될때마다 비움
+
+    errorArray.forEach(error => {
+        errorMsgs.innerHTML += `
+        <li>${error}</li>
+        `;
+    });
+
+    errorList.classList.remove("errors-invisible");
+}

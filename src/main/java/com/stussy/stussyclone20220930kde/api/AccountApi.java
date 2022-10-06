@@ -1,5 +1,7 @@
 package com.stussy.stussyclone20220930kde.api;
 
+import com.stussy.stussyclone20220930kde.Exception.CustomValidationException;
+import com.stussy.stussyclone20220930kde.dto.CMRespDto;
 import com.stussy.stussyclone20220930kde.dto.RegisterReqDto;
 import com.stussy.stussyclone20220930kde.dto.vaildation.ValidationSequence;
 import org.springframework.http.ResponseEntity;
@@ -27,22 +29,7 @@ public class AccountApi {
     public ResponseEntity<?> register(@Validated(ValidationSequence.class) @RequestBody RegisterReqDto registerReqDto, BindingResult bindingResult){
         //body데이터를 넘기는것 무조건 json dto
 
-        if(bindingResult.hasErrors()){
-            Map<String, String> errorMap = new HashMap<String, String>();
-
-            List<FieldError> fieldErrors =bindingResult.getFieldErrors();
-            for(FieldError fieldError : fieldErrors){
-                System.out.println("필드명: " +fieldError.getField());
-                System.out.println("에러 메세지: " +fieldError.getDefaultMessage());
-                errorMap.put(fieldError.getField(), fieldError.getDefaultMessage());
-
-            }
-
-            return ResponseEntity.badRequest().body(errorMap);
-
-        }
-
-        return ResponseEntity.ok().body(null);
+        return ResponseEntity.created(null).body(new CMRespDto<> ("회원가입성공" , registerReqDto));
 
     }
 }
