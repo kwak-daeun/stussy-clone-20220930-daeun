@@ -28,6 +28,7 @@ registerButton.onclick = () => {
 
             console.log(error.responseJSON.data);
             loadErrorMessage(error.responseJSON.data);
+            //메소드 호출
         }
 
     }
@@ -40,6 +41,7 @@ function loadErrorMessage(errors){
     const errorList = document.querySelector(".errors");
     const errorMsgs = document.querySelector(".error-msgs");
     const errorArray = Object.values(errors);
+    //인덱스가 없기 때문에 object.values를 써준다
 
     errorMsgs.innerHTML=""; //초기화 실행될때마다 비움
 

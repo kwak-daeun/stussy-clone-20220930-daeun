@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 
-public class AccountController {
+public class  AccountController {
 
     @GetMapping("/account/login")
     public String login() {
