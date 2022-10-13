@@ -11,18 +11,21 @@
         <result property="update_date" column="update_date"/>
     </resultMap>
 
+
     <resultMap id="user" type="com.stussy.stussyclone20220930kde.domain.User">
         <result property="id" column="id"/>
         <result property="email" column="email"/>
         <result property="password" column="password"/>
         <result property="name" column="name"/>
         <result property="provider" column="provider"/>
-        <result property="role_id" column="role_id"/>
+        <result property="role_id" column="role_name"/>
         <result property="create_date" column="create_date"/>
         <result property="update_date" column="update_date"/>
         <collection property="role" resultMap="role"/>
     </resultMap>
 
+
+<!--//findUserByEmail 메소드, resultmap join하는것-->
 
     <select id="findUserByEmail" parameterType="String" resultMap="user">
         select
@@ -32,7 +35,7 @@
         um.name,
         um.provider,
         um.role_id,
-        rm.name,
+        rm.name as role_name,
         um.create_date,
         um.update_date
         from
@@ -41,6 +44,21 @@
         where
         um.email = #{email}
 
-
     </select>
+
+    <insert id="saveUser" parameterType="com.stussy.stussyclone20220930kde.domain.User">
+        insert into
+            user_mst
+        values(
+            0,
+            #{email},
+            #{password},
+            #{name},
+            #{provider},
+            #{role_id},
+            now(),
+            now()
+        )
+    </insert>
+
 </mapper>

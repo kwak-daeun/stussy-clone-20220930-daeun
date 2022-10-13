@@ -19,12 +19,13 @@ registerButton.onclick = () => {
         contentType: "application/json",                        //전송할 데이터가 json인 경우                
         data: JSON.stringify(user),                             //전송할 데이터가 있으면
         dataType: "json", //return타입
-        success: (response) =>{ //괄호 안에는 메소드              //json와 text 등을 사용할 수 있지만 js사용함
-            alert("회원가입 요청 성공");
-           // console.log(response);                             //성공시에 실행될 메소드
+        success: (response, textStatus, request) =>{ //괄호 안에는 메소드              //json와 text 등을 사용할 수 있지만 js사용함
+           console.log(response);
+           const successURI = request.getResponseHeader("location");
+           location.replace(successURI + "?email="  + response.data);
+           //성공시에 실행될 메소드
         },
         error: (error) => {                                     //실패시 실행될 메소드
-            alert("회원가입 요청 실패");
 
             console.log(error.responseJSON.data);
             loadErrorMessage(error.responseJSON.data);
