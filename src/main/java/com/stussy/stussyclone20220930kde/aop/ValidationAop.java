@@ -18,13 +18,16 @@ import java.util.Map;
 @Component
 public class ValidationAop {
 
-    @Pointcut("execution(* com.stussy.stussyclone20220930kde..*Api.*(..))")
+    //@Pointcut("execution(* com.stussy.stussyclone20220930kde..*Api.*(..))")
     //*모든 메소드에 적용해라. get* get으로 시작하는 메소드 적용, set* set으로 시작 하는,  *.*는 모든 클래스
     // *api.* api로 끝나는 클래스 모두
     // 패키지는 지우고 ..으로 하면 하위 모든 패키지 적용.
-    private void executionPointCut(){}
+    //private void executionPointCut(){}
 
-        @Around("executionPointCut()")
+    @Pointcut("@annotation(com.stussy.stussyclone20220930kde.aop.annotation.ValidAspect)")
+    private void annotationPointCut(){}
+
+        @Around("annotationPointCut()")
         public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
 
         Object[] args = joinPoint.getArgs();

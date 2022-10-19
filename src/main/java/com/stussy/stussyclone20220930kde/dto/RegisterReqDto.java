@@ -35,7 +35,7 @@ public class RegisterReqDto {
     public User toEntity(){
         return User.builder()
                 .email(email)
-                .password(new BCryptPasswordEncoder().encode(password))
+                .password(new BCryptPasswordEncoder().encode(password)) //데이터베이스에  암호화되어있음  >security가 들고가서
                 .name(firstName+lastName)
                 .role_id(1)
                 .build();

@@ -23,21 +23,12 @@
 
 }
 
-@keyframes visible{
+@keyframes visible{ /*이걸쓰는이유 ! 물어보기*/
     from {
         height: 0px;
     }
     to{
         height: 200px;
-    }
-}
-
-@keyframes invisible{
-    from {
-        height: 200px;
-    }
-    to{
-        height: 0px;
     }
 }
 
@@ -50,9 +41,14 @@
     animation : visible 0.2s linear alternate;
 }
 
-input[type="text"]{
+input[type="text"], input[type="number"]{
     height:36px;
 }
+
+input[type="number"]{
+    text-align: right;
+}
+
 
 textarea{
     height: 100%;
