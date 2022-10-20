@@ -60,30 +60,29 @@ class ProductMst{ //앞에 #을 붙이는건 private이라는뜻
     }
 }
 
-class RegisterService{ //싱글톤
-    static #instance = null;
 
-    constructor(){ //생성자, this안에 productMst가 변수로 생김
-        this.loadRegister(); //생성되자마자 호출,
-        //메소드 안에서도 this 넣어줌
-    }
-    
-    static getInstance() {
-        if(this.#instance == null) {
-            this.#instance = new RegisterService();
-        }
-        return this.#instance;
-    }
 
-    loadRegister(){
-        new RegisterEventService();    
+class CommonApi {
+    getCategoryList(){
+        let responseResult = null;
 
-    }
+        $.ajax({
+            async: false,
+            type: "get",
+            url: "/api/admin/product/category",
+            dataType: "json",
+            success: (response) => {
+                responseResult = response.data;
+            },
+            error: (error) => {
+                console.log(error);
+            }
+        });
 
-    setRegisterHeaderEvent() {
-        new RegisterEventService();
-    }
-}
+        return responseResult;
+        
+       }
+   }
 
 
 class RegisterApi{
@@ -151,7 +150,6 @@ class RegisterEventService{
         
         }
        
-
     }
 }
 
@@ -200,15 +198,56 @@ class RegisterEventService{
             console.log(productMst.getObject);
 
             const registerApi = new RegisterApi();
-            registerApi.createProductRequest(productMst.getObject());
+            if(registerApi.createProductRequest(productMst.getObject())){
+                alert("상품 등록 완료");
+                location.reload();
+            }
 
         }
     }
 }
 
+class RegisterService{ //싱글톤
+    static #instance = null;
+
+    constructor(){ //생성자, this안에 productMst가 변수로 생김
+        this.loadRegister(); //생성되자마자 호출,
+        //메소드 안에서도 this 넣어줌
+    }
+    
+    static getInstance() {
+        if(this.#instance == null) {
+            this.#instance = new RegisterService();
+        }
+        return this.#instance;
+    }
+
+    loadRegister(){
+     
+    }
+
+    getCategoryList(){
+        const commonApi = new CommonApi();
+        const productCategoryList = commonApi.getCategoryList();
+    
+        const productCategory = document.querySelector(".product-category");
+        productCategory.innerHTML = '<option value="none">상품 종류</option>';
+
+        productCategoryList.forEach(category =>{
+            productCategory.innerHTML += `
+            <option value="${category.id}">${category.name}></option>
+            `;
+        })
+    }
+setRegisterHeaderEvent() {
+    new RegisterEventService(); 
+
+    }
+}
 
  
 window.onload = () => { //페이지가 띄어졌을때
+   RegisterService.getInstance().getCategoryList();
    RegisterService.getInstance().setRegisterHeaderEvent();
 
 }

@@ -5,7 +5,7 @@
 
 <mapper namespace="com.stussy.stussyclone20220930kde.repository.admin.ProductManagementRepository">
     <resultMap id="product_category" type="com.stussy.stussyclone20220930kde.domain.ProductCategory">
-        <result property="category_id" column="category_id"/>
+        <result property="category_id" column="id"/>
         <result property="group_id" column="group_id"/>
         <result property="category_name" column="category_name"/>
 
@@ -16,10 +16,27 @@
             id,
             group_id,
             category_name
-
         from
             pdt_category_mst
     </select>
+
+    <insert id="saveProductMst" parameterType="com.stussy.stussyclone20220930kde.domain.Product">
+        insert into
+            pdt_mst
+        values(
+            0,
+            #{pdt_name},
+            #{category_id},
+            #{pdt_price},
+            #{pdt_simple_info},
+            #{pdt_detail_info},
+            #{pdt_option_info},
+            #{pdt_management_info},
+            #{pdt_shipping_info},
+            now(),
+            now()
+        )
+    </insert>
 
 
 
