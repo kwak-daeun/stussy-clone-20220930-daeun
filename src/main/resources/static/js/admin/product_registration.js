@@ -85,9 +85,9 @@ class CommonApi {
    }
 
 
-class RegisterApi{
+class ProductApi{
     createProductRequest(productMst) {
-        let responseResult = null;
+        let responseData = null;
 
         $.ajax({
             async: false,
@@ -97,7 +97,7 @@ class RegisterApi{
             data: JSON.stringify(productMst),
             dataType: "json",
             success: (response) => {
-                responseResult = response.data;
+                responseData = response.data;
             },
             error: (error) => {
                 console.log(error);
@@ -105,7 +105,27 @@ class RegisterApi{
 
         });
 
-        return responseResult;
+        return responseData;
+    }
+
+    getProductListRequest(listRequestParams){
+        let responseData = null;
+
+        $.ajax({
+            async: false,
+            type: "get",
+            url: "/api/admin/products",
+            data : listRequestParams,
+            dataType: "json",
+            success: (response) => {
+              responseData = response.data;  
+            },
+            error : (error) =>{
+                console.log(error);
+            }
+        })
+        return responseData;
+
     }
 
 }
@@ -197,8 +217,8 @@ class RegisterEventService{
 
             console.log(productMst.getObject);
 
-            const registerApi = new RegisterApi();
-            if(registerApi.createProductRequest(productMst.getObject())){
+            const productApi = new ProductApi();
+            if(productApi.createProductRequest(productMst.getObject())){
                 alert("상품 등록 완료");
                 location.reload();
             }
@@ -245,6 +265,17 @@ setRegisterHeaderEvent() {
     }
 }
 
+class ListService{
+    static #instance = null;
+
+    getInstance(){
+        if(this.#instance ==null){
+            this.#instance = new ListService();
+        }
+
+        return this.#instance;
+    }
+}
  
 window.onload = () => { //페이지가 띄어졌을때
    RegisterService.getInstance().getCategoryList();
