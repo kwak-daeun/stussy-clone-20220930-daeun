@@ -9,7 +9,7 @@ public class CollectionsController {
 
     @GetMapping("/collections/{category}")
     public String loadCollections(@PathVariable String category) {
-        return "product/collections_number";
+        return "product/collections_scroll";
     }
 }
 

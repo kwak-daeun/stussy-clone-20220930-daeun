@@ -55,6 +55,7 @@ class PageNumber{
         this.createPreButton();
         this.createNumberButtons();
         this.createNextButton();
+        this.addPageButtonEvent();
 
 
     }
@@ -74,7 +75,8 @@ class PageNumber{
 
         for(let i = startIndex; i<=endIndex; i++){
             this.#pageNumberList.innerHTML += `
-            <a href="javascript:void(0)"><li>${i}</li></a>
+            <a href="javascript:void(0)"><li>${i}</li></a> 
+    
 
             `;
 
@@ -89,7 +91,29 @@ class PageNumber{
             
         }
 
+    }
 
+    addPageButtonEvent(){
+        const pageButtons = this.#pageNumberList.querySelectorAll("li");
+        pageButtons.forEach(button => {
+            button.onclick = () => {
+                if(button.textContent == "<"){  
+                    const nowPage = CollectionsService.getInstance().collectionsEntity.page;
+                    CollectionsService.getInstance().collectionsEntity.page = Number(nowPage) -1;
+                    CollectionsService.getInstance().loadCollections();
+                }else if(button.textContent == ">"){
+                    const nowPage = CollectionsService.getInstance().collectionsEntity.page;
+                    CollectionsService.getInstance().collectionsEntity.page =  Number(nowPage) +1;
+                    CollectionsService.getInstance().loadCollections();
+                }else{ //button의 textcontent 자기자신번호
+                    if(button.textContent != nowPage){
+                        CollectionsService.getInstance().collectionsEntity.page = button.textContent;
+                        CollectionsService.getInstance().loadCollections();
+                    }
+                
+                }
+            }
+        });
     }
 }
 
@@ -104,7 +128,7 @@ class CollectionsService{
     }
 
     collectionsEntity = {
-        page: 2,
+        page: 1,
         totalCount: 0
 
 
@@ -112,13 +136,43 @@ class CollectionsService{
 
     loadCollections(){
         const responseData = CollectionsApi.getInstance().getCollections(this.collectionsEntity.page);
-        this.collectionsEntity.totalCount = responseData[0].productTotalCount;
-
-        new PageNumber(this.collectionsEntity.page, this.collectionsEntity.totalCount);
+        console.log(responseData);
+        if(responseData.length > 0){
+            this.collectionsEntity.totalCount = responseData[0].productTotalCount;
+            new PageNumber(this.collectionsEntity.page, this.collectionsEntity.totalCount);
+            this.getCollections(responseData);
+            
+        }else{
+            alert("해당 카테코리에 등록된 상품 정보가 없습니다.");
+            location.href ="/collections/all"
+        }
 
     }
-}
 
+    getCollections(responseData){
+        const collectionProducts = document.querySelector(".collection-products");
+        collectionProducts.innerHTML = ``;
+
+        responseData.forEach(product => {
+            collectionProducts.innerHTML  +=`
+            <li class="collection-product">
+            <div class="product-img">
+                <img src="/static/images/product1.png">
+            </div>
+            <div>
+            <div class="product-name">
+               ${product.productName}
+            </div>
+            <div class="product-price">
+               ${product.productPrice}원
+            </div>
+        </li>
+            `;
+
+        })
+    }
+
+}
 window.onload = () => {
     CollectionsService.getInstance().loadCollections();
 }
