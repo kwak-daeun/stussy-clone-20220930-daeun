@@ -78,6 +78,26 @@ ${error.responseJSON.data.error}
 
     }
 
+    registImgFiles(formData){
+        $.ajax({
+            async: false,
+            type : "post",
+            url : "/api/admin/product/img",
+            enctype : "multipart/form-data", //파일전송일때 필수
+            contentType : false,            //파일전송일때 필수
+            processData : false,            //파일전송일때 필수
+            data : formData,
+            dataType : "json",
+            success : (response) => {
+                alert("이미지 등록 완료");
+                location.reload();
+            },
+            error : (error) => {
+                console.log(error);
+            }
+        });
+    }
+
 }
  
 
@@ -167,6 +187,24 @@ class ProductImgFile{
 
     constructor(){
         this.addFileInputEvent();
+        this.addUploadEvent();
+    }
+
+    addUploadEvent(){
+        const uploadButton = document.querySelector(".upload-button");
+        uploadButton.onclick = () => {
+            const formData = new FormData();
+
+            const productId = document.querySelector(".product-select").value;
+            FormData.append("pdtId", productId); 
+
+            this.newImgList.forEach(imgFile => {
+                formData.append("files", imgFile); 
+            });
+
+            ProductApi.getInstance().registImgFiles(formData);
+
+        }
     }
 
     addFileInputEvent() {
@@ -202,7 +240,7 @@ class ProductImgFile{
         const fileList = document.querySelector(".file-list");
         fileList.innerHTML = "";
 
-        this.newImgList.forEach((imgFile,i) => {
+        this.newImgList.forEach((imgFile,i) => { 
             const reader = new FileReader(); //reader 객체는 한번밖에 못씀
 
             reader.onload = (e) => { //괄호안에 EVENT객체
@@ -218,10 +256,30 @@ class ProductImgFile{
             `;
          }
 
-            reader.readAsDataURL(imgFile) //해당파일의 이미지경로 DataURL
-
+            setTimeout(() =>  { 
+                reader.readAsDataURL(imgFile);
+            }, i * 300); //200 = 0.2초//해당파일의 이미지경로 DataURL,  비동기인 이 메소드호출을 시간간격대로 줄꺼임
+            
         });
+         setTimeout(() =>  { 
+            this.addDeleteEvent();
+        }, this.newImgList.length * 300);
 
+
+
+    }
+
+    addDeleteEvent(){
+        const deleteButtons = document.querySelectorAll(".delete-button");
+
+        deleteButtons.forEach((deleteButton,i) => {
+            deleteButton.onclick = () => {
+                if(confirm("상품을 지우시겠습니까?")){
+                    this.newImgList.splice(i, 1); //그 인덱스부터 뒤에는 갯수
+                    this.loadImgs();
+                }
+            }
+        });
     }
 
 

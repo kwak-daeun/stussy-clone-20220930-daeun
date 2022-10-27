@@ -2,6 +2,7 @@ package com.stussy.stussyclone20220930kde.service.admin;
 
 import com.stussy.stussyclone20220930kde.dto.CategoryResponseDto;
 import com.stussy.stussyclone20220930kde.dto.ProductRegisterDtlReqDto;
+import com.stussy.stussyclone20220930kde.dto.admin.ProductImgReqDto;
 import com.stussy.stussyclone20220930kde.dto.admin.ProductMstOptionRespDto;
 import com.stussy.stussyclone20220930kde.dto.admin.ProductRegisterReqDto;
 
@@ -19,6 +20,9 @@ public interface ProductManagementService {
     public void checkDuplicatedColor(ProductRegisterDtlReqDto productRegisterDtlReqDto) throws Exception;
 
     public void registerDtl(ProductRegisterDtlReqDto productRegisterDtlReqDto) throws Exception;
+
+    public void registerImg(ProductImgReqDto productImgReqDto) throws Exception;
+
 
 
     }
