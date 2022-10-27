@@ -90,14 +90,28 @@ class Option {
         return this.#instance;
     }
 
+
+
+    constructor() {
+        this.setProductMstSelectOptions();
+        this.addSubmitEvent();
+    }
+
     setProductMstSelectOptions() {
         const pdtMstSelect = document.querySelector(".product-select");
-        CommonApi.getInstance().getProductMstList().forEach(product => {
-            pdtMstSelect.innerHTML += `
-                 <option value="${product.pdtId}">(${product.category})${product.pdtName}</option>
-            
-            `;
-        });
+        const responseData =  CommonApi.getInstance().getProductMstList();
+        if(responseData !=null){
+            if(responseData.length > 0){
+                responseData.forEach(product => {
+                    console.log(product)
+                    pdtMstSelect.innerHTML += `
+                     <option value="${product.pdtId}">(${product.category})${product.pdtName}</option>
+                
+                `;
+            });
+        }
+
+    }
 
         this.addMstSelectEvent();
 
@@ -124,7 +138,7 @@ class Option {
     }
 
     addSubmitEvent(){ //registProductDtl 호출
-        const registButton = document.querySelector(".regist-button");
+        const registButton = document.querySelectorAll(".regist-button")[0];
         registButton.onclick = () => {
             const productDtlParams ={
                 "pdtId" : document.querySelector(".product-select").value,
@@ -140,7 +154,80 @@ class Option {
     }
 }
 
+class ProductImgFile{
+    static #instance = null;
+    static getInstance(){
+        if(this.#instance == null){
+            this.#instance = new ProductImgFile();
+        }
+        return this.#instance;
+    }
+
+    newImgList = new Array();
+
+    constructor(){
+        this.addFileInputEvent();
+    }
+
+    addFileInputEvent() {
+        const filesInput = document.querySelector(".files-input");
+        const imgAddButton = document.querySelector(".img-add-button");
+        imgAddButton.onclick =() => {
+            filesInput.click();
+        }
+
+        filesInput.onchange = () => {
+            const formData = new FormData(document.querySelector("form"));
+            //formdata안에 file-input이 담겨있다
+
+            let changeFlag = false;
+            
+            formData.forEach(value => { //파일을 꺼낸 데이터가 0이 아니면 실행 시킬것이다.
+                console.log(value);
+                if(value.size != 0){
+                    this.newImgList.push(value);
+                    changeFlag = true;
+                }
+            })
+
+            if(changeFlag){
+                this.loadImgs();
+                filesInput.value = null;//value값을 초기화 안시켜주면,객체가 존재하므로 null값주기
+                
+            }
+        }
+    }
+
+    loadImgs() {
+        const fileList = document.querySelector(".file-list");
+        fileList.innerHTML = "";
+
+        this.newImgList.forEach((imgFile,i) => {
+            const reader = new FileReader(); //reader 객체는 한번밖에 못씀
+
+            reader.onload = (e) => { //괄호안에 EVENT객체
+                fileList.innerHTML += `
+                <li class="file-info">
+                <div class="file-img">
+                    <img src= "${e.target.result}">
+                </div>
+                <div class="file-name">${imgFile.name}</div>
+                <button type="button" class="btn delete-button">삭제</button>
+                </li>
+                 
+            `;
+         }
+
+            reader.readAsDataURL(imgFile) //해당파일의 이미지경로 DataURL
+
+        });
+
+    }
+
+
+}
+
 window.onload = () => {
-    Option.getInstance().setProductMstSelectOptions();
-    Option.getInstance().addSubmitEvent();
+    Option.getInstance();
+    ProductImgFile.getInstance();
 }

@@ -1,3 +1,7 @@
+.files-input {
+    display: none; /*사진등록을 하면 뜨도록 숨겨둠*/
+}
+
 .file-list{
     margin : 15px 0px;
 
