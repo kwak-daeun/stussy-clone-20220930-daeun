@@ -21,5 +21,3 @@ mybatis:
     - /mappers/*.xml
 
 
-file:
-  path: C:/daeun/stussy-clone-20220930-daeun-main/src/main/resources/static/upload/

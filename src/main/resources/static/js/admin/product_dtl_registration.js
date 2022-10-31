@@ -196,7 +196,7 @@ class ProductImgFile{
             const formData = new FormData();
 
             const productId = document.querySelector(".product-select").value;
-            FormData.append("pdtId", productId); 
+            formData.append("pdtId", productId); 
 
             this.newImgList.forEach(imgFile => {
                 formData.append("files", imgFile); 

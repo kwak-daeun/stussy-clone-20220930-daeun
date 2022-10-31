@@ -36,12 +36,18 @@ class CollectionsApi{
     }
 }
 
-
     
-class pageScroll{
-    constructor(){
-        this.addScrollPagingEvent(); //생성자, 이벤트 호출
+class PageScroll{
+    static #instance = null;
+
+    static getInstance(){
+        if(this.#instance ==null){
+            this.#instance = new PageScroll();
+        }  
+        return this.#instance; 
     }
+
+
 
     addScrollPagingEvent(){
         const html = document.querySelector("html");
@@ -75,11 +81,17 @@ class CollectionsService{
         return this.#instance; 
     }
 
+    pdtIdList = null;
+
     collectionsEntity = {
         page: 1,
         totalCount: 0,
         maxPage: 0
 
+    }
+
+    constructor() {
+        this.pdtIdList = new Array();
 
     }
 
@@ -107,10 +119,11 @@ class CollectionsService{
         const collectionProducts = document.querySelector(".collection-products");
 
         responseData.forEach(product => {
+            this.pdtIdList.push(product.productId);
             collectionProducts.innerHTML  +=`
             <li class="collection-product">
             <div class="product-img">
-                <img src="/static/images/product1.png">
+                <img src="/static/upload/product/${product.mainImg}">
             </div>
             <div>
             <div class="product-name">
@@ -122,11 +135,25 @@ class CollectionsService{
         </li>
             `;
 
-        })
+        });
+        this.addProductListEvent();
     }
+
+    addProductListEvent(){
+        const collectionProducts = document.querySelectorAll(".collection-product");
+
+        collectionProducts.forEach((product, index) => {
+            product.onclick =() => {
+                location.href ="/product/" + this.pdtIdList[index];
+
+            }
+        })
+
+    }
+
 
 }
 window.onload = () => {
     CollectionsService.getInstance().loadCollections();
-    new pageScroll();
+    PageScroll.getInstance().addScrollPagingEvent();
 }
