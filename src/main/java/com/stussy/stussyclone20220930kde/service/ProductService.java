@@ -1,5 +1,6 @@
 package com.stussy.stussyclone20220930kde.service;
 
+import com.stussy.stussyclone20220930kde.dto.CheckoutRespDto;
 import com.stussy.stussyclone20220930kde.dto.CollectionListRespDto;
 import com.stussy.stussyclone20220930kde.dto.ProductRespDto;
 
@@ -11,4 +12,6 @@ public interface ProductService {
     public List<CollectionListRespDto> getProductList(String category, int page) throws Exception;
 
     public ProductRespDto getProduct(int pdtId) throws Exception;
+
+    public CheckoutRespDto getCheckoutProduct(int pdtDtlId) throws Exception;
 }
