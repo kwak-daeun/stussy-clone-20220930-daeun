@@ -1,20 +1,19 @@
 class ImportApi {
-
     #IMP = null;
 
-    constructor(){
+    constructor() {
         this.#IMP = window.IMP;
-        this.#IMP.init("imp45236213"); 
+        this.#IMP.init("imp14519436");
         this.addPaymentEvent();
     }
-
-    addPaymentEvent(){
+    
+    addPaymentEvent() {
         document.querySelector(".payment-button").onclick = () => {
             this.requestPay();
         }
     }
 
-     requestPay() {
+    requestPay() {
         const pdtName = document.querySelector(".product-name").textContent;
         const pdtPrice = document.querySelector(".product-price").textContent;
         const email = document.querySelector(".principal-email").value;
@@ -25,29 +24,31 @@ class ImportApi {
         const address = addressAll + " " + addressDetail;
         const phone = document.querySelector(".phone-number").value;
 
+        // IMP.request_pay(param, callback) 결제창 호출
+        IMP.request_pay({ // param
+            pg: "kakaopay",
+            pay_method: "card",
+            merchant_uid: "PRODUCT-" + new Date().getTime(),
+            name: pdtName,
+            amount: pdtPrice,
+            buyer_email: email,
+            buyer_name: name,
+            buyer_tel: phone,
+            buyer_addr: address,
+            buyer_postcode: zoneCode
+        }, function (rsp) { // callback
+            if (rsp.success) {
 
-            // IMP.request_pay(param, callback) 결제창 호출
-            IMP.request_pay({ // param
-                pg: "kakaopay",
-                pay_method: "card",
-                merchant_uid: "PRODUCT-" + new Date().getTime(),
-                name: pdtName,
-                amount: pdtPrice,
-                buyer_email: email,
-                buyer_name: name,
-                buyer_tel: phone,
-                buyer_addr: address,
-                buyer_postcode: zoneCode
-            }, function (rsp) { // callback
-                if (rsp.success) {
-                
-                    
-                } else {
-                    
-                }
-            });        
-         }
+            } else {
+
+            }
+
+        });
     }
+
+}
+
+
 window.onload = () => {
     AddressApi.getInstance().addAddressButtonEvent();
     new ImportApi();

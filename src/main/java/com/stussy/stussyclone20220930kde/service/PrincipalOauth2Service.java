@@ -20,12 +20,13 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class PrincipalOauth2Service extends DefaultOAuth2UserService {
+    //defaultOauth2UserService 모든객체가 들어가있따.
 
     private final AccountRepository accountRepository;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-        OAuth2User oAuth2User = super.loadUser(userRequest);
+        OAuth2User oAuth2User = super.loadUser(userRequest); //Oauth2User 안에 있는 정보 가져다쓰기 위해 대입해준다.
 
         log.info("oAuth2User: {}", oAuth2User.getAttributes());
         log.info("userRequest: {}", userRequest.getClientRegistration());
@@ -34,6 +35,7 @@ public class PrincipalOauth2Service extends DefaultOAuth2UserService {
         try {
            principalDetails = getPrincipalDetails(provider, oAuth2User.getAttributes());
         } catch (Exception e) {
+            e.printStackTrace();
             throw new OAuth2AuthenticationException("login failed");
         }
 
@@ -42,18 +44,17 @@ public class PrincipalOauth2Service extends DefaultOAuth2UserService {
 
     private PrincipalDetails getPrincipalDetails(String provider, Map<String, Object> attributes) throws Exception {
         User user = null;
-        Map<String, Object> oauth2attributes = null;
+        Map<String, Object> oauth2Attributes = null;
         String email = null;
 
         if(provider.equalsIgnoreCase("google")) { //equalsIgnoreCase 대소문자 구분x
-            oauth2attributes = attributes;
+            oauth2Attributes = attributes;
         }else if(provider.equalsIgnoreCase("naver")){
-            oauth2attributes = (Map<String, Object>) attributes.get("response");
+            oauth2Attributes = (Map<String, Object>) attributes.get("response");
 
         }
 
-        email =(String) oauth2attributes.get("email");
-
+        email =(String) oauth2Attributes.get("email");
         user = accountRepository.findUserByEmail(email);
 
         if(user == null){
@@ -61,18 +62,25 @@ public class PrincipalOauth2Service extends DefaultOAuth2UserService {
             user = User.builder()
                     .email(email)
                     .password(new BCryptPasswordEncoder().encode(UUID.randomUUID().toString()))
-                    .name((String) attributes.get("name"))
+                    .name((String) oauth2Attributes.get("name"))
                     .provider(provider)
                     .role_id(1)
                     .build();
 
             accountRepository.saveUser(user);
 
-        }else if(user.getProvider() ==null ){
+        }else if(user.getProvider() ==null ) {
             // 연동
-
+            user.setProvider(provider);
+            accountRepository.updateProvider(user);
+        }else if(!user.getProvider().contains(provider)) {
+            user.setProvider(user.getProvider() + "," + provider);
+            accountRepository.updateProvider(user);
         }
 
-        return new PrincipalDetails(user, attributes);
+        System.out.println(user);
+
+
+        return new PrincipalDetails(user, oauth2Attributes);
     }
 }

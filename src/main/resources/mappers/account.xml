@@ -23,7 +23,16 @@
         <result property="update_date" column="update_date"/>
         <collection property="role" resultMap="role"/>
     </resultMap>
-<!--각각 result달아주고 collection으로 두개 합쳐줌-->
+    <update id="updateProvider" parameterType="com.stussy.stussyclone20220930kde.domain.User">
+        update
+            user_mst
+        set
+            provider =#{provider},
+            update_date = now()
+        where
+            id=#{id}
+    </update>
+    <!--각각 result달아주고 collection으로 두개 합쳐줌-->
 
 <!--//findUserByEmail 메소드, resultmap join하는것-->
 

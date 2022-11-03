@@ -16,6 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final PrincipalOauth2Service principalOauth2Service;
+    //service annotation 달아서 ioc 해놔서 객체주입할 수 있음
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder(){
@@ -40,6 +41,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .loginPage("/account/login")            //login page Get요청
                 .loginProcessingUrl("/account/login")   //login service Post요청
                 .failureHandler(new AuthFailureHandler())
+                .defaultSuccessUrl("/index")
                 .and()
                 .oauth2Login()
                 .userInfoEndpoint()
